@@ -71,9 +71,6 @@ body {
     align-items: center;
     gap: clamp(12px, 2vw, 24px);
     margin-bottom: clamp(18px, 2.3vw, 30px);
-
-    // без жёстких брейкпоинтов: при нехватке места колонки сами переносятся
-    // (grid auto-placement + minmax выше уже помогает)
   }
 
   &__tabs {
@@ -102,28 +99,30 @@ body {
     }
 
     &--active {
-      color: var(--text);
-      outline: 1px solid var(--border-2);
+      color: var(--badge-design);
+      outline: 1px solid var(--badge-design);
       background: #fff;
+      .market__tab-count {
+        color: var(--badge-design);
+      }
     }
   }
 
   &__tab-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-left: 8px;
-    min-width: 22px;
+    position: absolute;
     height: 18px;
     padding: 0 6px;
-
-    font-size: 12px;
+    font-size: 10px;
+    line-height: 150%;
+    text-align: center;
+    color: var(--muted);
     font-weight: 900;
     color: var(--text);
-    background: rgba(30, 33, 44, 0.08);
-    border-radius: 50px;
+    top: 5%;
     transform: translateY(-1px);
+    // &--active {
+    //   color: var(--badge-design) !important;
+    // }
   }
 
   &__search {
@@ -195,7 +194,7 @@ body {
   }
 
   &__badge {
-  //  j
+    //  j
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -208,11 +207,21 @@ body {
     font-size: 14px;
     line-height: 1;
 
-    &--marketing { background: var(--badge-marketing); }
-    &--management { background: var(--badge-management); }
-    &--hr { background: var(--badge-hr); }
-    &--design { background: var(--badge-design); }
-    &--dev { background: var(--badge-dev); }
+    &--marketing {
+      background: var(--badge-marketing);
+    }
+    &--management {
+      background: var(--badge-management);
+    }
+    &--hr {
+      background: var(--badge-hr);
+    }
+    &--design {
+      background: var(--badge-design);
+    }
+    &--dev {
+      background: var(--badge-dev);
+    }
   }
 
   &__card-title {

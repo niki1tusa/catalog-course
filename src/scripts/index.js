@@ -6,16 +6,21 @@
   const searchInput = root.querySelector(".market__search-input");
   const cards = Array.from(root.querySelectorAll(".market__card"));
   const empty = root.querySelector(".market__empty");
-  const allCountEl = root.querySelector('[data-count-for="All"]');
+
+  const countEls = new Map(
+    Array.from(root.querySelectorAll(".market__tab-count")).map((el) => [
+      el.getAttribute("data-count-for"),
+      el,
+    ])
+  );
 
   const items = cards.map((el) => {
     const title = (el.dataset.title || "").trim();
     const category = (el.dataset.category || "").trim();
     return {
       el,
-      title,
       titleLower: title.toLowerCase(),
-      category
+      category,
     };
   });
 
@@ -23,7 +28,7 @@
   let query = "";
 
   function setActiveTab(nextCategory) {
-    activeCategory = nextCategory;
+    activeCategory = nextCategory || "All";
 
     tabs.forEach((btn) => {
       const isActive = btn.dataset.filter === activeCategory;
@@ -34,21 +39,38 @@
     apply();
   }
 
+  function updateCounts(qLower) {
+    const counts = { All: 0 };
+
+    items.forEach((item) => {
+      const matchQuery = !qLower || item.titleLower.includes(qLower);
+      if (!matchQuery) return;
+
+      counts.All++;
+      counts[item.category] = (counts[item.category] || 0) + 1;
+    });
+
+    for (const [category, el] of countEls.entries()) {
+      const value = counts[category] ?? 0;
+      el.textContent = String(value);
+    }
+  }
+
   function apply() {
-    const q = query.trim().toLowerCase();
+    const qLower = query.trim().toLowerCase();
+    updateCounts(qLower);
 
     let visibleCount = 0;
 
     items.forEach((item) => {
       const matchCategory = activeCategory === "All" || item.category === activeCategory;
-      const matchQuery = !q || item.titleLower.includes(q);
+      const matchQuery = !qLower || item.titleLower.includes(qLower);
       const isVisible = matchCategory && matchQuery;
 
       item.el.classList.toggle("market__card--hidden", !isVisible);
       if (isVisible) visibleCount++;
     });
 
-    if (allCountEl) allCountEl.textContent = String(visibleCount);
     if (empty) empty.hidden = visibleCount !== 0;
   }
 
@@ -62,6 +84,5 @@
       apply();
     });
   }
-
   apply();
 })();
